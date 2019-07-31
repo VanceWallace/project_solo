@@ -1,10 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Test from './test.js' 
+
 
 class App extends React.Component{
-// in this case App is a child of the parent component "react"
+
+
+    // in this case App is a child of the parent component "react"
     render() {
         return(
             <div>
@@ -17,10 +19,27 @@ class App extends React.Component{
 }
 
 class TestTwo extends React.Component {
+
+    
+constructor (props){
+    super(props)
+    this.state = {
+        text: null
+    }
+ }
+    componentDidMount (){ 
+        fetch('http://localhost:3000/express')
+        // fetch ('/express')
+        .then(res => res.json())
+        .then(data => this.setState({ text:data }))
+        .catch(err => console.log(err))
+    }
     render() {
-            return(<h1>"TestTwo text"</h1>)
+        return(<h1>{this.state.text}</h1>)
     }
 }
+
+
 
 
 ReactDOM.render(
