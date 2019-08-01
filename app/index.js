@@ -61,8 +61,9 @@ class RepresentativesDisplay extends React.Component {
     constructor (props){
         super(props)
         this.state = {
-            status: null,
-            copyright: null
+            nameOne: "NoData",
+            nameTwo: "NoData",
+            positionsArr: []
         }
      }
      componentDidUpdate(prevProps){
@@ -70,9 +71,8 @@ class RepresentativesDisplay extends React.Component {
         if(this.props.rollCallNumber !== prevProps.rollCallNumber){
             //set number from props, this is the rollCallNumber from the previous fetch
             let number = this.props.rollCallNumber
-            console.log("This is what I'm fetching:")
-            console.log("https://api.propublica.org/congress/v1/116/senate/sessions/1/votes/" + number+".json")
-        
+            // console.log("This is what I'm fetching:")
+            // console.log("https://api.propublica.org/congress/v1/116/senate/sessions/1/votes/" + number+".json")
             fetch("https://api.propublica.org/congress/v1/116/senate/sessions/1/votes/" + number+".json", {
                 headers: new Headers({
                 'x-api-key': 'wkton7932mou5NQLIHL0BMzxIMYdyzSCQ8i2xJqk'    
@@ -81,8 +81,9 @@ class RepresentativesDisplay extends React.Component {
             // fetch ('/express')
             .then(res => res.json())
             .then(data => this.setState({ 
-                status:data.results.votes.vote.positions[0].name,
-                copyright:data.results.votes.vote.positions[1].name,
+                // nameOne:data.results.votes.vote.positions[0].name,
+                // nameTwo:data.results.votes.vote.positions[1].name,
+                positionsArr:data.results.votes.vote.positions
             }))
             .catch(err => console.log(err))
         }
@@ -90,17 +91,23 @@ class RepresentativesDisplay extends React.Component {
         }
 
     render() { 
-        console.log("This is my number", this.props.rollCallNumber);
-
-    //  const rollCallNumber = this.props.rollCallNumber;
-    //  const { rollCallNumber } = this.props;
+        // console.log("This is my number", this.props.rollCallNumber);
+        for (let i = 0; i < this.state.positionsArr.length; i++){
+            if (this.state.positionsArr[i].state == "CA" && this.state.nameOne == "NoData") {
+               this.state.nameOne = this.state.positionsArr[i].name; 
+            }
+            else if (this.state.positionsArr[i].state == "CA" && this.state.nameTwo == "NoData"){
+                this.state.nameTwo = this.state.positionsArr[i].name;
+            }
+        }
+        // console.log(this.state.positionsArr);
      return(
          <div>
             <RepresentativeCard
-            rollCallNumber={this.state.status}
+            rollCallNumber={this.state.nameOne}
             />
             <RepresentativeCard
-            rollCallNumber={this.state.copyright}
+            rollCallNumber={this.state.nameTwo}
             />   
          </div>
      )
